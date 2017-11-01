@@ -21,17 +21,25 @@
 
 @implementation LeePageController
 
+-(instancetype)init{
+    if (self = [super init]) {
+        self.selectColor = [UIColor redColor];
+        self.titleFontSize = [UIFont systemFontOfSize:14];
+        self.selectFontSize = [UIFont systemFontOfSize:16];
+        self.titleItemHeight = 45;
+        self.titleItemWidth = kScreenWidth / 5;
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     [self buidingUI];
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.extendedLayoutIncludesOpaqueBars = YES;
 }
 
 -(void)buidingUI{
-    
-    
     
     [self.view addSubview:self.titlesScrollerView];
     [self.view addSubview:self.vcScrollerView];
@@ -46,8 +54,11 @@
             [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             NSString * title = [self.dataSource pageController:self titleAtIndex:i];
             [button setTitle:title forState:UIControlStateNormal];
-            button.titleLabel.font = self.titleFontSize;
+            
+            
+            button.titleLabel.textAlignment = NSTextAlignmentCenter;
             [button setTitleColor:self.selectColor forState:UIControlStateSelected];
+            button.titleLabel.font = self.titleFontSize;
             [self.titlesScrollerView addSubview:button];
             [self.itemArr addObject:button];
             if (i==0)  button.selected = YES;
@@ -64,16 +75,17 @@
 }
 
 -(void)titleItemClick:(UIButton *)button{
-    
     [self buttonIsSelectedWithIndex:button.tag];
-    self.vcScrollerView.contentOffset = CGPointMake(button.tag * kScreenWidth, 0);
+    [self.vcScrollerView setContentOffset:CGPointMake(button.tag * kScreenWidth, 0) animated:YES];
 }
 
 -(void)buttonIsSelectedWithIndex:(NSInteger )index{
     for (UIButton * button in self.itemArr) {
         if (button.tag == index) {
             button.selected = YES;
+            button.titleLabel.font = self.selectFontSize;
         }else{
+            button.titleLabel.font = self.titleFontSize;
             button.selected = NO;
         }
     }
@@ -89,21 +101,24 @@
 }
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    CGFloat offsetProportion = scrollView.contentOffset.x / scrollView.contentSize.width;
+    CGFloat contentWidth = self.titlesScrollerView.contentSize.width;
     if (scrollView == self.vcScrollerView) {
         NSLog(@"偏移值比例%lf",scrollView.contentOffset.x / scrollView.contentSize.width);
-        CGFloat offsetProportion = scrollView.contentOffset.x / scrollView.contentSize.width;
         CGPoint offset = self.titlesScrollerView.contentOffset;
         offset.x = self.titlesScrollerView.contentSize.width * offsetProportion;
         [self.titlesScrollerView setContentOffset:offset animated:YES];
         self.lineView.frame = CGRectMake(offset.x, self.titleItemHeight - 1, self.titleItemWidth, 1);
     }
     if (scrollView == self.titlesScrollerView) {
-        if (self.titlesScrollerView.contentOffset.x < 0) {
+        CGFloat offsetX =self.titlesScrollerView.contentOffset.x;
+        
+        if ( offsetX < 0) {
             self.titlesScrollerView.contentOffset = CGPointMake(0, 0);
         }
-        
-        if (self.titlesScrollerView.contentOffset.x  > self.titlesScrollerView.contentSize.width - kScreenWidth ) {
-            self.titlesScrollerView.contentOffset = CGPointMake(self.titlesScrollerView.contentSize.width - kScreenWidth , 0);
+        if (offsetX  > contentWidth - kScreenWidth ) {
+            NSLog(@" self.titlesScrollerView.contentOffset.x  = %lf   self.titlesScrollerView.contentSize.width = %lf",offsetX,contentWidth);
+            self.titlesScrollerView.contentOffset = CGPointMake(contentWidth - kScreenWidth , 0);
         }
     }
 }
@@ -117,17 +132,17 @@
     return _lineView;
 }
 
--(NSMutableArray *)controllers{
-    if (!_controllers) {
-        _controllers = [NSMutableArray array];
-        for (int i = 0 ; i < self.pageNumber; i++) {
-            UIViewController * vc = [[UIViewController alloc] init];
-            vc.view.backgroundColor = kRandomColor;
-            [_controllers addObject:vc];
-        }
-    }
-    return _controllers;
-}
+//-(NSMutableArray *)controllers{
+//    if (!_controllers) {
+//        _controllers = [NSMutableArray array];
+//        for (int i = 0 ; i < self.pageNumber; i++) {
+//            UIViewController * vc = [[UIViewController alloc] init];
+//            vc.view.backgroundColor = kRandomColor;
+//            [_controllers addObject:vc];
+//        }
+//    }
+//    return _controllers;
+//}
 
 -(NSMutableArray *)itemArr{
     if (!_itemArr) {
