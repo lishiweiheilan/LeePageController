@@ -7,13 +7,37 @@
 //
 
 #import <UIKit/UIKit.h>
+@class LeePageController;
+
+@protocol LeePageControllerDataSource <NSObject>
+
+@required
+
+/**
+ 返回分也数量
+ */
+- (NSInteger)numbersOfChildControllersInPageController:(LeePageController *)pageController;
+
+/**
+ 返回控制器
+*/
+- (__kindof UIViewController *)pageController:(LeePageController *)pageController viewControllerAtIndex:(NSInteger)index;
+/**
+标题
+ */
+- (NSString *)pageController:(LeePageController *)pageController titleAtIndex:(NSInteger)index;
+
+//@optional
+
+@end
+
 
 @interface LeePageController : UIViewController
-@property(nonatomic,strong) NSArray * titlesArr;//标题数组
-@property(nonatomic,strong) NSArray * controllerArr;//控制器数组
 @property(nonatomic,assign) CGFloat titleItemHeight;//item的高度
 @property(nonatomic,assign) CGFloat titleItemWidth;//item的宽度
-@property(nonatomic,assign) NSInteger titleFontSize;//字体大小
+@property(nonatomic,assign) UIFont * titleFontSize;//字体大小
 @property(nonatomic,strong) NSMutableArray * controllers;
-@property(nonatomic,strong) UIColor * selectColor;
+@property(nonatomic,strong) UIColor * selectColor;//选中颜色 默认红色
+@property(nonatomic,strong) UIColor * normalColor;//默认颜色 默认黑色
+@property(nonatomic,weak) id<LeePageControllerDataSource>dataSource;
 @end
