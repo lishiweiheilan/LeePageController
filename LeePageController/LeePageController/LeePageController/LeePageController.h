@@ -14,10 +14,9 @@
 @required
 
 /**
- 返回分也数量
+ 返回分页数量
  */
 - (NSInteger)numbersOfChildControllersInPageController:(LeePageController *)pageController;
-
 /**
  返回控制器
 */
@@ -27,7 +26,11 @@
  */
 - (NSString *)pageController:(LeePageController *)pageController titleAtIndex:(NSInteger)index;
 
-//@optional
+@optional
+/**
+ 点击item触发
+ */
+-(void)selectItemWithIndex:(NSInteger )index;
 
 @end
 

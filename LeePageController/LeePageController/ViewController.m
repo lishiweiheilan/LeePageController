@@ -20,9 +20,25 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    self.view.backgroundColor = [UIColor redColor];
-    // Do any additional setup after loading the view, typically from a nib.
+    
+    
+    UIView * view = [[UIView alloc] initWithFrame:CGRectMake(110, 110, 200, 60)];
+    view.backgroundColor = [UIColor greenColor];
+    view.layer.shadowColor = [UIColor redColor].CGColor;
+    view.layer.shadowOpacity = 0.5f;
+    view.layer.shadowOffset = CGSizeMake(1,0);
+    CGFloat paintingWidth = 200;
+    CGFloat paintingHeight = 60;
+    UIBezierPath *path = [UIBezierPath bezierPath];
+    [path moveToPoint:CGPointMake(5, -0.5)];
+    //添加直线
+    [path addLineToPoint:CGPointMake(paintingWidth - 5 , -0.5)];
+    [path addLineToPoint:CGPointMake(paintingWidth - 5, paintingHeight - 5 )];
+    [path addLineToPoint:CGPointMake(5, paintingHeight - 5 )];
+    [path addLineToPoint:CGPointMake(5, -0.5)];
+    //设置阴影路径
+    view.layer.shadowPath = path.CGPath;
+    [self.view addSubview:view];
 }
 
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
@@ -51,6 +67,14 @@
 - (NSString *)pageController:(LeePageController *)pageController titleAtIndex:(NSInteger)index{
     return self.cateArray[index][@"name"];
 }
+
+/**
+ 点击item触发
+ */
+-(void)selectItemWithIndex:(NSInteger )index {
+    NSLog(@"index = %zd",index);
+}
+
 
 - (NSArray *)cateArray {
     if (!_cateArray) {

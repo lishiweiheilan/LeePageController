@@ -77,6 +77,9 @@
 -(void)titleItemClick:(UIButton *)button{
     [self buttonIsSelectedWithIndex:button.tag];
     [self.vcScrollerView setContentOffset:CGPointMake(button.tag * kScreenWidth, 0) animated:YES];
+    if ([self.dataSource respondsToSelector:@selector(selectItemWithIndex:)]) {
+        [self.dataSource selectItemWithIndex:button.tag];
+    }
 }
 
 -(void)buttonIsSelectedWithIndex:(NSInteger )index{
@@ -92,7 +95,6 @@
 }
 
 #pragma mark -- scrollView代理方法
-
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     if (scrollView == self.vcScrollerView) {
         NSInteger index = scrollView.contentOffset.x / kScreenWidth;
@@ -104,7 +106,7 @@
     CGFloat offsetProportion = scrollView.contentOffset.x / scrollView.contentSize.width;
     CGFloat contentWidth = self.titlesScrollerView.contentSize.width;
     if (scrollView == self.vcScrollerView) {
-        NSLog(@"偏移值比例%lf",scrollView.contentOffset.x / scrollView.contentSize.width);
+//        NSLog(@"偏移值比例%lf",scrollView.contentOffset.x / scrollView.contentSize.width);
         CGPoint offset = self.titlesScrollerView.contentOffset;
         offset.x = self.titlesScrollerView.contentSize.width * offsetProportion;
         [self.titlesScrollerView setContentOffset:offset animated:YES];
@@ -117,7 +119,7 @@
             self.titlesScrollerView.contentOffset = CGPointMake(0, 0);
         }
         if (offsetX  > contentWidth - kScreenWidth ) {
-            NSLog(@" self.titlesScrollerView.contentOffset.x  = %lf   self.titlesScrollerView.contentSize.width = %lf",offsetX,contentWidth);
+//            NSLog(@" self.titlesScrollerView.contentOffset.x  = %lf   self.titlesScrollerView.contentSize.width = %lf",offsetX,contentWidth);
             self.titlesScrollerView.contentOffset = CGPointMake(contentWidth - kScreenWidth , 0);
         }
     }
